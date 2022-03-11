@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -39,14 +39,27 @@ namespace HotelManagementSolution.Controllers
                 _logger.LogError(ex.Message);
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
-           
         }
 
         [HttpGet("/GetAllAvailableRooms")]
-        public IEnumerable<IHotelRoom> GetAllAvailableRooms()
+        public IActionResult GetAllAvailableRooms()
         {
-            Expression<Func<IHotelRoom, bool>> predicate = (hotelRoom => hotelRoom.Status == RoomStatusExtensions.Status_Available);
-            return _hotelRoomDataService.List(predicate);
+            try
+            {
+                Expression<Func<IHotelRoom, bool>> predicate = (hotelRoom => hotelRoom.Status == RoomStatusExtensions.Status_Available);
+                var availableRooms = _hotelRoomDataService.List(predicate);
+                if (availableRooms.Any())
+                {
+                    return Ok(availableRooms);
+                }
+                return Ok("No rooms available!");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
         }
 
         [HttpPost("/AssignRoom")]
@@ -76,13 +89,12 @@ namespace HotelManagementSolution.Controllers
         {
             try
             {
-                IActionResult result = null;
                 if (!string.IsNullOrEmpty(roomNumber))
                 {
                     bool success = _hotelRoomDataService.Checkout(roomNumber);
                     if (success)
                     {
-                        return Ok(result);
+                        return Ok("Checkout Success!");
                     }
                     return BadRequest("Checkout failed!");
                 }
@@ -101,13 +113,12 @@ namespace HotelManagementSolution.Controllers
         {
             try
             {
-                IActionResult result = null;
                 if (!string.IsNullOrEmpty(roomNumber))
                 {
                     bool success = _hotelRoomDataService.SetClean(roomNumber); ;
                     if (success)
                     {
-                        return Ok(result);
+                        return Ok("SetClean Success!");
                     }
                     return BadRequest("SetClean failed!");
                 }
@@ -126,13 +137,12 @@ namespace HotelManagementSolution.Controllers
         {
             try
             {
-                IActionResult result = null;
                 if (!string.IsNullOrEmpty(roomNumber))
                 {
                     bool success = _hotelRoomDataService.SetOutOfService(roomNumber);
                     if (success)
                     {
-                        return Ok(result);
+                        return Ok("Set out of service success!");
                     }
                     return BadRequest("SetOutOfService failed!");
                 }

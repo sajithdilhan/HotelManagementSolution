@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HotelManagementSolution.Migrations
 {
     [DbContext(typeof(HotelDataContext))]
-    [Migration("20220311110152_enumchange")]
-    partial class enumchange
+    [Migration("20220311112442_freshInit")]
+    partial class freshInit
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -32,8 +32,9 @@ namespace HotelManagementSolution.Migrations
                         .HasMaxLength(10)
                         .HasColumnType("nvarchar(10)");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -44,121 +45,121 @@ namespace HotelManagementSolution.Migrations
                         {
                             Id = 1,
                             RoomNumber = "1A",
-                            Status = 0
+                            Status = "Available"
                         },
                         new
                         {
                             Id = 2,
                             RoomNumber = "1B",
-                            Status = 0
+                            Status = "Available"
                         },
                         new
                         {
                             Id = 3,
                             RoomNumber = "1C",
-                            Status = 0
+                            Status = "Available"
                         },
                         new
                         {
                             Id = 4,
                             RoomNumber = "1D",
-                            Status = 0
+                            Status = "Available"
                         },
                         new
                         {
                             Id = 5,
                             RoomNumber = "1E",
-                            Status = 0
+                            Status = "Available"
                         },
                         new
                         {
                             Id = 6,
                             RoomNumber = "2E",
-                            Status = 0
+                            Status = "Available"
                         },
                         new
                         {
                             Id = 7,
                             RoomNumber = "2D",
-                            Status = 0
+                            Status = "Available"
                         },
                         new
                         {
                             Id = 8,
                             RoomNumber = "2C",
-                            Status = 0
+                            Status = "Available"
                         },
                         new
                         {
                             Id = 9,
                             RoomNumber = "2B",
-                            Status = 0
+                            Status = "Available"
                         },
                         new
                         {
                             Id = 10,
                             RoomNumber = "2A",
-                            Status = 0
+                            Status = "Available"
                         },
                         new
                         {
                             Id = 11,
                             RoomNumber = "3A",
-                            Status = 0
+                            Status = "Available"
                         },
                         new
                         {
                             Id = 12,
                             RoomNumber = "3B",
-                            Status = 0
+                            Status = "Available"
                         },
                         new
                         {
                             Id = 13,
                             RoomNumber = "3C",
-                            Status = 0
+                            Status = "Available"
                         },
                         new
                         {
                             Id = 14,
                             RoomNumber = "3D",
-                            Status = 0
+                            Status = "Available"
                         },
                         new
                         {
                             Id = 15,
                             RoomNumber = "3E",
-                            Status = 0
+                            Status = "Available"
                         },
                         new
                         {
                             Id = 16,
                             RoomNumber = "4E",
-                            Status = 0
+                            Status = "Available"
                         },
                         new
                         {
                             Id = 17,
                             RoomNumber = "4D",
-                            Status = 0
+                            Status = "Available"
                         },
                         new
                         {
                             Id = 18,
                             RoomNumber = "4C",
-                            Status = 0
+                            Status = "Available"
                         },
                         new
                         {
                             Id = 19,
                             RoomNumber = "4B",
-                            Status = 0
+                            Status = "Available"
                         },
                         new
                         {
                             Id = 20,
                             RoomNumber = "4A",
-                            Status = 0
+                            Status = "Available"
                         });
                 });
 #pragma warning restore 612, 618
