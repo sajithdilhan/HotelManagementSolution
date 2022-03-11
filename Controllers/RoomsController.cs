@@ -1,6 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CoreLibrary.Entities;
+using CoreLibrary.Services;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -11,42 +15,80 @@ namespace HotelManagementSolution.Controllers
     public class RoomsController : ControllerBase
     {
         private readonly ILogger<RoomsController> _logger;
+        private readonly IHotelRoomDataService _hotelRoomDataService;
 
-        public RoomsController(ILogger<RoomsController> logger)
+        public RoomsController(ILogger<RoomsController> logger, IHotelRoomDataService hotelRoomDataService)
         {
             _logger = logger;
+            _hotelRoomDataService = hotelRoomDataService;
         }
 
         // GET: api/<RoomsController>
-        [HttpGet]
-        public IEnumerable<string> Get()
+        [HttpGet("/GetAllRooms")]
+        public IEnumerable<IHotelRoom> GetAllRooms()
         {
-            return new string[] { "value1", "value2" };
+            return _hotelRoomDataService.List();
         }
 
-        // GET api/<RoomsController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpGet("/GetAllAvailableRooms")]
+        public IEnumerable<IHotelRoom> GetAllAvailableRooms()
         {
-            return "value";
+            Expression<Func<IHotelRoom, bool>> predicate = (hotelRoom => hotelRoom.Status == CoreLibrary.RoomStatus.Available);
+            return _hotelRoomDataService.List(predicate);
         }
 
-        // POST api/<RoomsController>
-        [HttpPost]
-        public void Post([FromBody] string value)
+        [HttpPost("/AssignRoom")]
+        public string AssignRoom()
         {
+            return _hotelRoomDataService.AssignRoom();
         }
 
-        // PUT api/<RoomsController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPost("/Checkout")]
+        public IActionResult Checkout(string roomNumber)
         {
+            IActionResult result = null;
+            if (!string.IsNullOrEmpty(roomNumber))
+            {
+               bool success = _hotelRoomDataService.Checkout(roomNumber);
+                if (success)
+                {
+                    return Ok(result);
+                }
+                return BadRequest("Checkout failed!");
+            }
+            return BadRequest("Checkout failed!");
         }
 
-        // DELETE api/<RoomsController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpPost("/SetClean")]
+        public IActionResult SetClean(string roomNumber)
         {
+            IActionResult result = null;
+            if (!string.IsNullOrEmpty(roomNumber))
+            {
+                bool success = _hotelRoomDataService.SetClean(roomNumber); ;
+                if (success)
+                {
+                    return Ok(result);
+                }
+                return BadRequest("SetClean failed!");
+            }
+            return BadRequest("SetClean failed!");
+        }
+
+        [HttpPost("/SetOutOfService")]
+        public IActionResult SetOutOfService(string roomNumber)
+        {
+            IActionResult result = null;
+            if (!string.IsNullOrEmpty(roomNumber))
+            {
+                bool success = _hotelRoomDataService.SetOutOfService(roomNumber);
+                if (success)
+                {
+                    return Ok(result);
+                }
+                return BadRequest("SetOutOfService failed!");
+            }
+            return BadRequest("SetOutOfService failed!");
         }
     }
 }

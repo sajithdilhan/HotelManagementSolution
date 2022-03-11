@@ -1,16 +1,14 @@
+using CoreLibrary.Data;
+using CoreLibrary.DataProviders;
+using CoreLibrary.Entities;
+using CoreLibrary.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace HotelManagementSolution
 {
@@ -32,6 +30,16 @@ namespace HotelManagementSolution
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "HotelManagementSolution", Version = "v1" });
             });
+
+            services.AddDbContext<HotelDataContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("HotelDBConnection"),
+                    assembly => assembly.MigrationsAssembly(System.Reflection.Assembly.GetExecutingAssembly().GetName().Name));
+            });
+
+            services.AddScoped<IHotelRoomsDataProvider, HotelRoomsDataProvider>()
+           .AddScoped<IHotelRoomDataService, HotelRoomDataService>()
+           .AddScoped<IHotelRoom, HotelRoom>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
