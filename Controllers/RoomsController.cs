@@ -1,5 +1,7 @@
-﻿using CoreLibrary.Entities;
+﻿using CoreLibrary;
+using CoreLibrary.Entities;
 using CoreLibrary.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -25,70 +27,122 @@ namespace HotelManagementSolution.Controllers
 
         // GET: api/<RoomsController>
         [HttpGet("/GetAllRooms")]
-        public IEnumerable<IHotelRoom> GetAllRooms()
+        public IActionResult GetAllRooms()
         {
-            return _hotelRoomDataService.List();
+            try
+            {
+                var allRooms = _hotelRoomDataService.List();
+                return Ok(allRooms);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+           
         }
 
         [HttpGet("/GetAllAvailableRooms")]
         public IEnumerable<IHotelRoom> GetAllAvailableRooms()
         {
-            Expression<Func<IHotelRoom, bool>> predicate = (hotelRoom => hotelRoom.Status == CoreLibrary.RoomStatus.Available);
+            Expression<Func<IHotelRoom, bool>> predicate = (hotelRoom => hotelRoom.Status == RoomStatusExtensions.Status_Available);
             return _hotelRoomDataService.List(predicate);
         }
 
         [HttpPost("/AssignRoom")]
-        public string AssignRoom()
+        public IActionResult AssignRoom()
         {
-            return _hotelRoomDataService.AssignRoom();
+            try
+            {
+                var roomNumber = _hotelRoomDataService.AssignRoom();
+                if (!string.IsNullOrEmpty(roomNumber))
+                {
+                    return Ok(roomNumber);
+                }
+                else
+                {
+                    return Ok("No rooms available!");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
         [HttpPost("/Checkout")]
         public IActionResult Checkout(string roomNumber)
         {
-            IActionResult result = null;
-            if (!string.IsNullOrEmpty(roomNumber))
+            try
             {
-               bool success = _hotelRoomDataService.Checkout(roomNumber);
-                if (success)
+                IActionResult result = null;
+                if (!string.IsNullOrEmpty(roomNumber))
                 {
-                    return Ok(result);
+                    bool success = _hotelRoomDataService.Checkout(roomNumber);
+                    if (success)
+                    {
+                        return Ok(result);
+                    }
+                    return BadRequest("Checkout failed!");
                 }
                 return BadRequest("Checkout failed!");
             }
-            return BadRequest("Checkout failed!");
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
         }
 
         [HttpPost("/SetClean")]
         public IActionResult SetClean(string roomNumber)
         {
-            IActionResult result = null;
-            if (!string.IsNullOrEmpty(roomNumber))
+            try
             {
-                bool success = _hotelRoomDataService.SetClean(roomNumber); ;
-                if (success)
+                IActionResult result = null;
+                if (!string.IsNullOrEmpty(roomNumber))
                 {
-                    return Ok(result);
+                    bool success = _hotelRoomDataService.SetClean(roomNumber); ;
+                    if (success)
+                    {
+                        return Ok(result);
+                    }
+                    return BadRequest("SetClean failed!");
                 }
                 return BadRequest("SetClean failed!");
             }
-            return BadRequest("SetClean failed!");
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+
         }
 
         [HttpPost("/SetOutOfService")]
         public IActionResult SetOutOfService(string roomNumber)
         {
-            IActionResult result = null;
-            if (!string.IsNullOrEmpty(roomNumber))
+            try
             {
-                bool success = _hotelRoomDataService.SetOutOfService(roomNumber);
-                if (success)
+                IActionResult result = null;
+                if (!string.IsNullOrEmpty(roomNumber))
                 {
-                    return Ok(result);
+                    bool success = _hotelRoomDataService.SetOutOfService(roomNumber);
+                    if (success)
+                    {
+                        return Ok(result);
+                    }
+                    return BadRequest("SetOutOfService failed!");
                 }
                 return BadRequest("SetOutOfService failed!");
             }
-            return BadRequest("SetOutOfService failed!");
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
     }
 }
