@@ -1,4 +1,4 @@
-HotelManagementSolution
+HotelManagementSolution - Web API
 ================================
 .NET Core 5.0
 
