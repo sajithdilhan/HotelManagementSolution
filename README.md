@@ -5,11 +5,17 @@ HotelManagementSolution - Web API
 NugetPackages
 ================================
 Microsoft.EntityFrameworkCore (5.0.15)
+
 Microsoft.EntityFrameworkCore.SqlServer (5.0.15)
+
 Microsoft.EntityFrameworkCore.Tools  (5.0.15)
+
 Swashbuckle.AspNetCore (6.3.0)		-> HotelManagementSolution
+
 Moq (4.17.2)						-> HotelManagementTest
+
 xunit (2.4.1)						-> HotelManagementTest
+
 xunit.runner.visualstudio (2.4.)3	-> HotelManagementTest
 
 DB Connection
